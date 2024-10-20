@@ -1,62 +1,63 @@
 public class PilhaVetor implements Pilha {
-    private Object[] a;  // Array para armazenar os elementos da pilha.
-    private int FC;  // Fator de crescimento, pode ser fixo ou duplicação.
-    private int topo;  // Índice do topo da pilha.
+    private Object[] a;  // Array para armazenar os elementos da pilha
+    private int FC;  // Fator de crescimento (0 = duplicação, >0 = incremento fixo)
+    private int topo;  // Índice do topo da pilha
 
-    public PilhaVetor(int capacidade, int crescimento) {
-        a = new Object[capacidade];  // Inicializa o array com a capacidade inicial.
-        FC = crescimento;  // Define o fator de crescimento.
-        topo = -1;  // Pilha começa vazia, portanto, o topo está em -1.
+    public PilhaVetor(int capacidadeInicial, int crescimento) {
+        a = new Object[capacidadeInicial];  // Inicializa o array com a capacidade inicial
+        FC = crescimento;  // Define o fator de crescimento
+        topo = -1;  // Inicializa o topo como -1 (pilha vazia)
     }
 
     @Override
     public int size() {
-        return topo + 1;  // Tamanho da pilha é topo + 1.
+        return topo + 1;  // Retorna o tamanho atual da pilha
     }
 
     @Override
     public boolean isEmpty() {
-        return topo == -1;  // Verifica se o topo está em -1 (ou seja, vazio).
+        return topo == -1;  // Verifica se a pilha está vazia
     }
 
     @Override
     public Object top() throws PilhaVaziaExcecao {
         if (isEmpty()) {
-            throw new PilhaVaziaExcecao("Pilha vazia");  // Lança exceção se a pilha estiver vazia.
+            throw new PilhaVaziaExcecao("Pilha está vazia");
         }
-        return a[topo];  // Retorna o elemento do topo.
+        return a[topo];  // Retorna o elemento no topo
     }
 
     @Override
     public void push(Object o) {
-        if (topo + 1 == a.length) {  // Se o array está cheio, é necessário aumentar a capacidade.
-            aumentaCapacidade();  // Aumenta a capacidade.
+        if (topo + 1 == a.length) {  // Se o array estiver cheio, aumenta a capacidade
+            aumentaCapacidade();
         }
-        a[++topo] = o;  // Insere o elemento e incrementa o topo.
+        a[++topo] = o;  // Insere o elemento no topo
     }
 
     @Override
     public Object pop() throws PilhaVaziaExcecao {
         if (isEmpty()) {
-            throw new PilhaVaziaExcecao("Pilha vazia");
+            throw new PilhaVaziaExcecao("Pilha está vazia");
         }
-        Object temp = a[topo];  // Armazena o valor a ser removido.
-        a[topo--] = null;  // Remove o elemento do topo e decrementa o topo.
-        return temp;  // Retorna o valor removido.
+        Object elemento = a[topo];  // Remove o elemento do topo
+        a[topo--] = null;  // Remove a referência e decrementa o topo
+        return elemento;  // Retorna o elemento removido
     }
 
-    // Método para aumentar a capacidade da pilha com base no fator de crescimento.
+    // Método que aumenta a capacidade da pilha quando necessário
     private void aumentaCapacidade() {
-        int novaCapacidade;
-        if (FC == 0) {
-            // Duplicação: nova capacidade é o dobro da atual.
-            novaCapacidade = a.length * 2;
-        } else {
-            // Crescimento fixo: nova capacidade é aumentada por um valor constante.
-            novaCapacidade = a.length + FC;
+        int novaCapacidade = (FC > 0) ? a.length + FC : a.length * 2;
+        Object[] novoArray = new Object[novaCapacidade];  // Cria um novo array com a nova capacidade
+        System.arraycopy(a, 0, novoArray, 0, a.length);  // Copia os elementos para o novo array
+        a = novoArray;  // Atualiza o array da pilha
+    }
+
+    // Método para esvaziar a pilha, removendo todos os elementos
+    public void empty() {
+        for (int i = 0; i <= topo; i++) {
+            a[i] = null;  // Remove as referências aos objetos armazenados no array
         }
-        Object[] novoArray = new Object[novaCapacidade];  // Cria novo array com a nova capacidade.
-        System.arraycopy(a, 0, novoArray, 0, a.length);  // Copia os elementos do array antigo.
-        a = novoArray;  // Atualiza a referência do array.
+        topo = -1;  // Reseta o índice do topo, indicando que a pilha está vazia
     }
 }
